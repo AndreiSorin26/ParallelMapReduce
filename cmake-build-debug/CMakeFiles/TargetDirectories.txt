@@ -1,0 +1,3 @@
+C:/Andrei/Languages/C++/MapReduce/cmake-build-debug/CMakeFiles/MapReduce.dir
+C:/Andrei/Languages/C++/MapReduce/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Andrei/Languages/C++/MapReduce/cmake-build-debug/CMakeFiles/rebuild_cache.dir

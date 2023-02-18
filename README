@@ -1,0 +1,11 @@
+Cirpici Andrei-Sorin 331CB
+
+- Solutia mea foloseste un threadpool care este constituit in pricipiu dintr-un deque pentru a putea adauga la final taskuri si a le scoate de la inceput
+- Prima data, thread-ul Main creeaza taskurile initiale (spargand inputul cu numele fiserelor in cate un nume per task)
+- Dupa mapperii iau fiecare cate un fisier, il proceseaza si creeaza un dinctionar (cheie, lista_valori), in care toate elementele din lista de valori se pot scrie
+ca x^cheie cu x arbitrar. Realizez acest lucru prin aproximarea cu metoda Newton a radicalului si dupa incerc sa testez pentru x si x + 1 pentru extra siguranta,
+unde x este partea intreaga a aproximarii calculate.
+- Mai departe, mapperii isi pun rezultatul in urmatorul workpool, cel al reducerilor, spart in bucati, fiecare cheie fiind alocata unui task separat pentru
+reduceri
+- Reducerii isi iau cate un task asociat id ului fiecaruia si il adauga pe rand intr-un acumulator prorpiu. La final rezultatul scriindu-se in fisier cu 
+acest acumulator

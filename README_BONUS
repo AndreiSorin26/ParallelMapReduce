@@ -1,0 +1,60 @@
+Structuri:
+	a) task: - taskType: id ul taskului pentru a putea atribui workwerilor taskuri separate daca este nevoie
+			 - args: pointer catre argumentele necesare pentru a realiza task-ul
+			 - job: pointer catre functia care va executa task-ul cu argumentul args
+	
+	b) reducerArgs: - taskType: tipul taskului ce va fi atribuit acestui reducer
+					- ownWorkpool: workpool-ul din care isi extrage task-urile
+					- accumulator: acumulatorul in care se aduna rezultatul fiecarui task procesat
+					- accumulate: functie care preia task-ul si-l adauga la acumulator
+					- processAccumulator: la final, cand reducerul si-a termiant taskurile, face ceva cu accumulatorul sau
+					- barrier: bariera care separa timpul de executie al mapperilor de cel al reducerilor
+	
+	c) mapperArgs: - taskType: tipul taskului ce va fi atribuit acestui reducer
+				   - ownWorkpool: workpool-ul din care isi extrage task-urile
+				   - nextWorkpool: workpool-ul in care va pune urmatoarele taskuri
+				   - convertResult: functie care converteste rezultatul taskului intr-o lista de task-uri de pus in nextWorkpool
+				   - barrier: bariera care separa timpul de executie al mapperilor de cel al reducerilor
+				   
+	d) mapreduceArgs: - mapperCount: numarul de mapperi
+					  - mArgs: argumentele maperilor
+					  - reducerCount: numarul de reduceri
+					  - rArgs: vector de argumente pentru fiecare reducer
+
+Clase:
+	a) workpool:
+		atribute: - tasks: dictionar in care cheile sunt tipuri de taskuri si valorile sunt cozi de taskuri
+				  - lock: un mutex care face ca preluarea/punerea unui task sa fie realizata de un singur thread odata
+		motode: - contructor: initializeaza mutexurile
+				- destructor: distrige mutexurile
+				- getTask(taskType): returneaza primul task din coada corespunzatoare taskTypeului si-l sterge din coada
+				- putTask(taskType): aduaga task in coada corespunzatoare taskTypeului
+				- empty(type): verifica daca coada aferenta type-ului este goala sau nu
+				
+	b) mapper:
+		atribute:
+		metode: -work: - fucntie care actioneaza ca un replicates worker
+					   - cat timp coada taskType-ulu iatribuit nu e goala, va lua primul task din coada
+					   - il va executa si va converti rezultatul intr-un vector cu taskuri si le va adauga in urmatorul workpool
+					   - asteapta la bariera pentru a sincronza cu reducerii
+	
+	c) reducer: - work: - fucntie care actioneaza ca un replicates worker
+						- asteapta la bariera pentru a sincronza cu mapperii
+						- cat timp coada taskType-ulu atribuit nu e goala, va lua primul task din coada
+						- acumuleaza rezultatul in acumulator
+						- la final proceasea acumulatorul creat
+	
+	d) map_reduce: - start: - intiializeaza bariera comuna a mapperilor si reducerilor
+							- creeaza threadurile pentru fiecare si dupa le asteapta terminarea
+							- distrige barierea comuna
+					
+
+Main:
+	- mapperSpecifications si accumulator sunt structuir create pentru Task-urile reducerilor si mapperilor 
+	- fastPow: algoritmul de exponentiere logaritmica
+	- root: algoritmul de aproximare Newton pentru radical (caut radacina fucntiei x^a - nr pentru a gasi sqrt_a(nr))
+	- mapperJob: README
+	- convert: sparge dictionaril (cheie, lsista_valori) creat de mapper in taskuri {taskType=cheie, args=lista_valori}
+	- accumulate: pune in acumulator valorile din task
+	- writeToFile: scrie in fiser numarul de valori obtinute
+	
